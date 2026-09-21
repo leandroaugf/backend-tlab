@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Chat</title>
+</head>
+<body>
+    <div class="chat_support" id="chat_support">
+        <div class="support_header">
+            <span class="icon" onclick="closeChat();">
+                <img src="/images/close.svg" width="20" height="20"/>
+            </span>
+            <div class="support_image_box">
+                <img class="icon" src="/images/image.png" width="20" height="20"/>
+            </div>
+            <div class="support_text">
+                <p class="support_text_title">Em suporte...</p>
+                <p class="support_text_name">Tem alguma dúvida?</p>
+            </div>
+        </div>
+
+        <div class="chat">
+            <div class="chat_messages">
+                <div class="d-flex"></div>
+            </div>
+            <script id="email-template" type="text/template">
+                <div class="client">
+                    <span class="email">{email}</span>
+                </div>
+            </script>
+            <script id="message-user-template" type="text/template">
+                <span class="client message">
+                    {message}
+                </span>
+                <span class="client date" data-date="{date}"></span>
+            </script>
+            <script id="admin-template" type="text/template">
+                <span class="admin name">atendente</span>
+                <span class="admin message">{message_admin}</span>
+                <span class="admin date" data-date="{date}"></span>
+            </script>
+        </div>
+
+        <div class="chat_messages">
+            <div class="line"></div>
+        </div>
+
+        <div class="message_send">
+            <input type="text" placeholder="Digite sua mensagem aqui">
+            <span class="icon">
+                <img src="/images/send.svg" width="20" height="20" />
+            </span>
+        </div>
+    </div>
+
+    <div class="chat_support" id="chat_help">
+        <div class="support_header">
+            <span class="icon" onclick="closeChat();">
+                <img src="/images/close.svg" width="20" height="20" />
+            </span>
+            <div class="support_text">
+                <p class="support_text_title">Ajuda</p>
+                <p class="support_text_name">Podemos te ajudar?</p>
+            </div>
+        </div>
+
+        <div class="text_help">
+            <textarea id="txt_help" cols="38" rows="16" onkeyup="keyUpHelp(event)" maxlength="250"></textarea>
+            <label id="charac_remaining">250 caracteres restantes</label>
+        </div>
+
+        <div class="first_email">
+            <span>Seu e-mail</span>
+            <input type="text" name="email" id="email" />
+        </div>
+
+        <div class="button">
+            <button class="btn_cancel" onclick="closeChat();">Cancelar</button>
+            <button class="btn_start_chat" id="start_chat">Iniciar chat</button>
+        </div>
+    </div>
+
+    <div class="support">
+        <button class="btn_support" id="btn_support" onclick="openChat();">
+            <img src="/images/chat.svg" width="20" height="20" /> Suporte
+        </button>
+    </div>
+
+    <script>
+        const chat = document.getElementById("chat_help");
+
+        function onLoad() {
+            fetch("http://localhost:3333/settings/admin").then((result) => 
+                result.json().then((response) => {
+                    const buttonSupport = document.getElementById("btn_support");
+                    if (!response.chat) {
+                        buttonSupport.style.display = "none";
+                    }
+                })
+            );
+        }
+
+        function openChat() {
+            chat.style.display = "block";
+        }
+
+        function closeChat() {
+            chat.style.display = "none";
+        }
+
+        function keyUpHelp(event) {
+            const charac_remaining = document.getElementById("charac_remaining");
+            const length_text = event.target.value.length;
+            charac_remaining.innerHTML = `${250 - length_text} caracteres restantes`;
+        }
+    </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.4/dayjs.min.js"></script>
+    <script src="https://unpkg.com/mustache@latest"></script>
+    <script src="/js/chat.js"></script>
+</html>
