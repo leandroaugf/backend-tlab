@@ -1,4 +1,24 @@
+# [ COMUNICAÇÃO COM O BANCO DE DADOS ] ===
+
 import os 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./geopontos.db");
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {};
+
+# conexão com o DB geopontos.db - sqlite
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
+SessionLocal = sessionmaker(bind=engine, autoflush = False, autocommit=False);
+
+#class Base -> toda tabela herda -> sqlalchemy: estas classes são tabelas
+class Base (DeclarativeBase):
+    pass;
+    
+# Abre uma sessão e repassa pro endpoint usar [yielddb] 
+def get_db():
+    db = SessionLocal();
+    try:
+        yield db;
+    finally:
+        db.close();
