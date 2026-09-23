@@ -23,3 +23,20 @@ def adicionar_usuario(email: str, nome: str, db: Session = Depends(get_db)):
     db.refresh(novo_usuario)
 
     return {"id": novo_usuario.id, "email": novo_usuario.email, "nome": novo_usuario.nome}
+
+@app.get("/ListarUsuarios/")
+def listar_usuarios(db: Session = Depends(get_db)):
+    usuarios = db.query(Usuario).all()
+    return [{"id": u.id, "email": u.email, "nome": u.nome} for u in usuarios]
+
+@app.put("/AlterarUsuario/")
+def alterar_usuario(email:str, novo_nome: str, db: Session = Depends(get_db)):
+    usuario = db.query(Usuario).filter(Usuario.email == email).first()
+    if not usuario:
+        raise HTTPException(status_code=404, detail="User not found");
+
+    db.delete(usuario)
+    db.commit()
+
+    return {"detail": "User removed"}
+    

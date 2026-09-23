@@ -20,4 +20,14 @@ def test_adicionar_usuario_duplicado(client):
 
     assert resposta.status_code == 400
 
+# Deve listar todos os 0 ou mais usuários
+def test_listar_usuarios_todos(client):
+    client.post("/ListarUsuarios/")
+
+    resposta = client.post(
+        "/ListarUsuarios/"
+    )
+
+
+
 # o PyTest reconhece client em params e injeta automaticamente a fixture no conftest.py
