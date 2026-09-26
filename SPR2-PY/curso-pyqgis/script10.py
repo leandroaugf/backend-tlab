@@ -19,3 +19,10 @@ rlayer.setRenderer(renderer)
 rlayer.triggerRepaint()
 QgsProject.instance().addMapLayer(rlayer)
 
+statistics = rlayer.dataProvider().bandStatistics(1, QgsRasterBandStats.All)
+print(statistics.minimumValue)
+print(statistics.maximumValue)
+print(statistics.mean)
+print(statistics.stdDev)
+
+

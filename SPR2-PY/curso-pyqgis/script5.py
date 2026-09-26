@@ -87,5 +87,5 @@ for feature in selection:
 
 layer.commitChanges()
 
-# remover selecionados
-layer.removeSelection()
+
+
