@@ -1,3 +1,8 @@
+import os
+from qgis.core import *
+from qgis.utils import iface
+from PyQt5.QtCore import QVariant
+
 def list_files(path, tipo):
     lst = []
     for root, directory, files in os.walk(path):
