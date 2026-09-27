@@ -54,6 +54,33 @@ def reproject(path, epsg):
     
     return
 
+def applyFilter(layer, field, param):
+    return layer.setSubsetString(f"{field} = '{param}'")
+
+def alertaAero(layer, param, path, field, state):
+    applyFilter(layer, 'uf', state)
+    
+    if param == 'seco':
+        buffer = 200
+    elif param == 'chuva':
+        buffer = 1000
+    else: # tempestade
+        buffer = 3000
+        
+    processing.run("native:buffer", 
+                  {'INPUT': layer,
+                  'DISTANCE':buffer,
+                  'SEGMENTS':5,
+                  'END_CAP_STYLE':0,
+                  'JOIN_STYLE':0,
+                  'MITER_LIMIT':2,
+                  'DISSOLVE':True,
+                  'SEPARATE_DISJOINT':False,
+                  'OUTPUT': path+'buffer.shp'})
+    
+    iface.addVectorLayer(path+'buffer.shp', "análise buffer", "ogr")
+    return
+
 path = 'C:/Users/leand/Desktop/backend-tlab/SPR2-PY/dados/'
 camadas = open_vector_layers(path, '.shp')
 
