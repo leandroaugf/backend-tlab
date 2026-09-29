@@ -22,5 +22,5 @@ class Ponto(Base):
     id = Column(String, primary_key=True, default=gerar_id_ponto)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
-    descricao = Column(Float, nullable=True, default="sem descrição")
+    descricao = Column(String, nullable=False, default="sem descrição")
 

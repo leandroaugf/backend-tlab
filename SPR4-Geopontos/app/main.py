@@ -16,14 +16,14 @@ Base.metadata.create_all(bind=engine)
 @app.post("/AdicionarPonto/")
 def adicionar_ponto(
     latitude: float,
-    longitutde: float,
+    longitude: float,
     email: str,
     descricao: str = "no description",
     db: Session = Depends(get_db)
 ):
     usuario = db.query(Usuario).filter(Usuario.email == email).first()
     if not usuario:
-        raise HTTPException(status_code = 404, detail: "user not found")
+        raise HTTPException(status_code = 404, detail= "user not found")
 
     novo_ponto = Ponto(latitude=latitude, longitude=longitude, descricao=descricao)
     db.add(novo_ponto)
@@ -37,7 +37,7 @@ def adicionar_ponto(
         "descricao": novo_ponto.descricao,
     }
 
-@app.post("/ListarPontos/")
+@app.get("/ListarPontos/")
 def listar_pontos(db: Session = Depends(get_db)):
     pontos = db.query(Ponto).all()
     return [
@@ -48,11 +48,11 @@ def listar_pontos(db: Session = Depends(get_db)):
         for p in pontos
     ]
 
-@app.put("/AlterarPonto/"):
+@app.put("/AlterarPonto/")
 def alterar_ponto(
     id: str, 
-    nova_latitude: float = None, 
-    nova_longitude: float = None, 
+    latitude: float = None, 
+    longitude: float = None, 
     descricao: str=None, 
     db: Session = Depends(get_db)
 ):
@@ -61,22 +61,22 @@ def alterar_ponto(
         raise HTTPException(status_code = 404, detail="point wasnt found")
     
     if latitude:
-        ponto.latitude = nova_latitude;
+        ponto.latitude = latitude
     if longitude:
-        ponto.longitude = nova_longitude;
+        ponto.longitude = longitude
     if descricao:
         ponto.descricao = descricao
 
     db.commit()
-    db.refresh(novo_ponto)
+    db.refresh(ponto)
     
     return {"id": ponto.id, "latitude": ponto.latitude, "longitude": ponto.longitude, "descricao": ponto.descricao}
 
-@app.delete("/RemoverPonto/"):
-def remover_ponto(id: str, email: str, db:Session = Depends(get_db)):
+@app.delete("/RemoverPonto/")
+def remover_ponto(id: str, user: str, db:Session = Depends(get_db)):
     ponto = db.query(Ponto).filter(Ponto.id == id).first()
     if not ponto:
-        raise HTTPException(status_code = 404, detail: "point wasnt found")
+        raise HTTPException(status_code = 404, detail= "point wasnt found")
     
     db.delete(ponto)
     db.commit()
@@ -123,5 +123,5 @@ def remover_usuario(email: str, db: Session = Depends(get_db)):
     db.delete(usuario)
     db.commit()
 
-    return {"detail: Usuário removido com sucesso!"}
+    return {"detail": "Usuário removido com sucesso!"}
 
