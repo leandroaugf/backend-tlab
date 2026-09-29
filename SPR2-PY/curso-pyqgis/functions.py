@@ -4,12 +4,13 @@ from qgis.core import *
 from qgis.utils import iface
 from PyQt5.QtCore import QVariant
 
-def list_files(path, tipo):
+def list_files(path, type):
     lst = []
     for root, directory, files in os.walk(path):
         for file in files:
-            if file.endswith(tipo):
+            if file.endswith(type):
                 lst.append(file)
+    
     return lst;
 
 def open_vector_layers(path, type):
@@ -38,12 +39,13 @@ def newAttribute(layer, fieldName, type):
     return
     
 def createFolder(inputpath):
-    if not os.path.exists(inputpath + 'reproject'):
+    if not os.path.exists(inputpath +'reproject'):
         os.makedirs(inputpath+'reproject')
     
     
 def reproject(path, epsg):
     createFolder(path)
+    
     for shape in list_files(path, '.shp'):
         inputpath = path+shape
         outpath = path + '/reproject/' + str(epsg) + '_' + shape 
